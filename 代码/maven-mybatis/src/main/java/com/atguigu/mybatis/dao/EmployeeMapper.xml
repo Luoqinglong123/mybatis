@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.dao.EmployeeMapper">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache">
+		<property name="timeToIdleSeconds" value="3600" /><!--1 hour -->
+		<property name="timeToLiveSeconds" value="3600" /><!--1 hour -->
+		<property name="maxEntriesLocalHeap" value="1000" />
+		<property name="maxEntriesLocalDisk" value="10000000" />
+		<property name="memoryStoreEvictionPolicy" value="LRU" />
+	</cache>
+	<select id="getEmpById" resultType="emp">
+		select * from tb_employee
+		where id = #{id}
+	</select>
+	<!-- public Employee getEmpByIdAndName(@Param("id")Integer id,@Param("name")String 
+		name); -->
+	<select id="getEmpByIdAndName" resultType="emp">
+		select * from
+		tb_employee
+		where id = #{id}
+		and last_name = #{name}
+	</select>
+	<!-- getEmpByDynamic -->
+	<select id="getEmpByDynamic" resultType="com.atguigu.mybatis.bean.Employee">
+		select * from tb_employee
+		<if test="id!=null">
+			where id=#{id}
+			<if test="lastName!=null and  lastName!=''">
+				and last_name=#{lastName}
+			</if>
+			<if test="gender==0 or gender ==1">
+				and gender = #{gender}
+			</if>
+			<if test="email !=null and email.trim()!=''">
+				and email = #{email}
+			</if>
+		</if>
+
+	</select>
+</mapper>
